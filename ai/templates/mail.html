@@ -8,20 +8,6 @@
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       rel="stylesheet"
     />
-    <script>
-      window.onload = function () {
-        // click 이벤트 설정
-        send.addEventListener("click", function () {
-          //form data  가져오기, 메일제목, 받는 이메일 주소, 메일내용
-          let recipient_email =
-            //처리중 이미지 보여주기
-            (document.getElementById("processing").innerHTML =
-              '<img src="/static/images/progress.gif" style="width: 3%; margin-top: 10px;">');
-
-          // 서버와 비동기 통신 (폼데이터 전달 => 결과 받아서 처리)
-        }); //클릭 이벤트 설정 end
-      }; //페이지로드 end
-    </script>
   </head>
   <body>
     <div id="result" class="container">
@@ -58,8 +44,8 @@
             placeholder="Enter message (Korean or English)"
             required
           >
-          즐거운 주말 입니다.
-          운동을 열심히 하세요~
+즐거운 주말 입니다.
+운동을 열심히 하세요~
          </textarea
           >
         </div>
@@ -69,5 +55,6 @@
         <span id="processing"></span>
       </form>
     </div>
+    <script src="/static/js/mail.js"></script>
   </body>
 </html>
