@@ -1,4 +1,5 @@
-let msg = document.getElementById("msg");
+const send = document.getElementById("send");
+const msg = document.getElementById("msg");
 
 send.addEventListener("click", function () {
   // 선택한 파일 데이터 저장 ★

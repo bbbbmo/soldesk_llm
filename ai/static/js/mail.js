@@ -1,3 +1,6 @@
+const send = document.getElementById("send");
+const processing_tag = document.getElementById("processing");
+
 // click 이벤트 설정
 send.addEventListener("click", () => {
   //form data  가져오기, 메일제목, 받는 이메일 주소, 메일내용

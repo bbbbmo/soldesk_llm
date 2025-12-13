@@ -1,3 +1,7 @@
+const send = document.getElementById("send");
+const clear = document.getElementById("clear");
+const result_animation_tag = document.getElementById("result_animation");
+
 send.addEventListener("click", () => {
   //article 뉴스를 가져와서
 
