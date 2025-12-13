@@ -19,3 +19,7 @@ def trans():
 @routes_bp.route('/mail')
 def mail():
     return render_template('mail.html')
+
+@routes_bp.route('/file')
+def file():
+    return render_template('fileupload.html')
