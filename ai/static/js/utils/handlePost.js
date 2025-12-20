@@ -1,9 +1,11 @@
-export const handlePost = async (url, data) => {
+export const handlePost = async (
+  url,
+  data,
+  headers = { "Content-Type": "application/json" }
+) => {
   const response = await fetch(url, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers,
     body: JSON.stringify(data),
   });
 

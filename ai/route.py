@@ -1,7 +1,10 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from flask import render_template
 import tool
 import mail
+import time
+import os
+import fileupload
 
 # Flask Blueprint는 Flask 애플리케이션을 기능 단위로 분리·구조화하기 위한 모듈화 도구
 routes_bp = Blueprint('routes', __name__)
@@ -83,9 +86,6 @@ def proc_mail():
     # 번역된 내용을 브라우저로 응답한다.            
     return {"subject":subject,"message":message,"recipient_email":recipient_email}
 
-@routes_bp.route('/file')
-def file():
-    return render_template('fileupload.html')
 
 @routes_bp.get('/movie')
 def movie_form():
@@ -131,3 +131,80 @@ def movie_proc():
     print('-> response:', response)
     
     return response  # json 객체 전달
+
+@routes_bp.get("/fileupload") 
+def fileupload_form():
+    return render_template("fileupload.html")
+
+@routes_bp.post("/fileupload") 
+def fileupload_proc():  
+    time.sleep(3) #3초 중지
+    # 업로드된 파일 받기(하나만받는다)
+    f = request.files['file']
+    # 파일사이즈 확인
+    file_size = len(f.read())
+    # 파일 포인터를 처음으로 이동
+    f.seek(0)
+    if fileupload.allowed_size(file_size) == False:
+        resp = jsonify({'message': "파일 사이즈가 25M를 넘습니다." + str(file_size/1024/1024) + ' M'})  # dict -> json string
+        resp.status_code = 500 # 서버 에러
+    
+    # # 허용 가능한 파일 확장자인지 확인
+    if f and fileupload.allowed_file(f.filename):
+        # 저장할 경로 지정 (예: 'storage' 폴더에 저장)
+        upload_folder = 'storage'
+        if not os.path.exists(upload_folder):
+          os.makedirs(upload_folder)
+        # 파일저장
+        f.save(os.path.join(upload_folder,f.filename))
+        # dict -> json string
+        resp = jsonify({'message':'파일을 저장했습니다.'})
+    else:
+        resp = jsonify({'message': '전송 할 수 없는 파일 형식입니다.'})  # dict -> json string
+        # resp.status_code = 500 # 서버 에러
+        
+    return resp
+
+@routes_bp.get("/pdf_text") 
+def pdf_text_form():
+    return render_template("pdf_text.html")
+
+@routes_bp.post("/pdf_text") 
+def pdf_text_proc():  
+    time.sleep(3) #3초 중지
+    # 업로드된 파일 받기(하나만받는다)
+    f = request.files['file']
+    # 파일사이즈 확인
+    file_size = len(f.read())
+    # 파일 포인터를 처음으로 이동
+    f.seek(0)
+    if fileupload.allowed_size(file_size) == False:
+        resp = jsonify({'message': "파일 사이즈가 25M를 넘습니다." + str(file_size/1024/1024) + ' M'})  # dict -> json string
+        resp.status_code = 500 # 서버 에러
+    
+    # # 허용 가능한 파일 확장자인지 확인
+    if f and fileupload.allowed_file(f.filename):
+        # 저장할 경로 지정 (예: 'static/pdf' 폴더에 저장)
+        upload_folder = os.path.join(os.getcwd(),'static','pdf')
+        if not os.path.exists(upload_folder):
+          os.makedirs(upload_folder)
+        # 파일저장
+        f.save(os.path.join(upload_folder,f.filename))
+        
+        # 업로드된 파일경우 
+        file_path = os.path.join(upload_folder,f.filename)
+        # 업로드된 pdf 파일을 본문만 읽어서 txt파일로 저장
+        file = fileupload.pdf_to_text(file_path)
+        # txt파일을 읽어서 요약한 결과 받기(llm)
+        summary = fileupload.summarize_txt(file)
+        
+        resp = jsonify({'summary':summary})
+        f.close()
+    else:
+        resp = jsonify({'message': '전송 할 수 없는 파일 형식입니다.'})  # dict -> json string
+        # resp.status_code = 500 # 서버 에러
+        
+    return resp
+
+
+    
