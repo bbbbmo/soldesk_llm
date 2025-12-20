@@ -1,21 +1,12 @@
 const send = document.getElementById("send");
 const result_animation_tag = document.getElementById("result_animation");
 
-const postTranslator = async (sentence, language, age) => {
-  const response = await fetch("/translator", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ sentence, language, age }),
+const postTranslator = async () =>
+  await handlePost("/translator", {
+    sentence: sentence.value,
+    language: language.value,
+    age: age.value,
   });
-
-  if (!response.ok) {
-    throw new Error("요청에 실패했습니다.");
-  }
-
-  return response.json();
-};
 
 send.addEventListener("click", async () => {
   try {

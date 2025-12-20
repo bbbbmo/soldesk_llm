@@ -4,21 +4,8 @@ const result_animation_tag = document.getElementById("result_animation");
 const article_tag = document.getElementById("article");
 const result_tag = document.getElementById("result");
 
-const postSummary = async (article) => {
-  const response = await fetch("/summary", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ article }),
-  });
-
-  if (!response.ok) {
-    throw new Error("요청에 실패했습니다.");
-  }
-
-  return response.json();
-};
+const postSummary = async () =>
+  await handlePost("/summary", { article: article_tag.value });
 
 send.addEventListener("click", async () => {
   try {

@@ -59,7 +59,7 @@ def proc_trans():
   return response
 
 @routes_bp.get('/mail')
-def mail():
+def mail_page():
     return render_template('mail.html')
 
 @routes_bp.post('/mail')
