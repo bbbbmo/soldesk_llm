@@ -1,6 +1,7 @@
 from flask import Blueprint, request
 from flask import render_template
 import tool
+import mail
 
 # Flask Blueprint는 Flask 애플리케이션을 기능 단위로 분리·구조화하기 위한 모듈화 도구
 routes_bp = Blueprint('routes', __name__)
@@ -57,9 +58,30 @@ def proc_trans():
   
   return response
 
-@routes_bp.route('/mail')
+@routes_bp.get('/mail')
 def mail():
     return render_template('mail.html')
+
+@routes_bp.post('/mail')
+def proc_mail():
+    data = request.json
+    subject = data['subject']
+    recipient_email = data['recipient_email']
+    message = data['message']
+    
+    # 제목, 내용 번역하기
+    subject = mail.use_api(subject)
+    message = mail.use_api(message)
+    print(subject)
+    print(message)
+    # 메일 보내기
+    if subject and recipient_email and message:
+        if mail.send_email(subject, recipient_email, message):
+            print('Email send successfully!')
+        else:
+            print('Failed to send email')
+    # 번역된 내용을 브라우저로 응답한다.            
+    return {"subject":subject,"message":message,"recipient_email":recipient_email}
 
 @routes_bp.route('/file')
 def file():

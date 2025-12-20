@@ -1,13 +1,36 @@
 const send = document.getElementById("send");
 const processing_tag = document.getElementById("processing");
 
-// click 이벤트 설정
-send.addEventListener("click", () => {
-  //form data  가져오기, 메일제목, 받는 이메일 주소, 메일내용
-  let recipient_email =
-    //처리중 이미지 보여주기
-    (document.getElementById("processing").innerHTML =
-      '<img src="/static/images/progress.gif" style="width: 3%; margin-top: 10px;">');
+const postMail = async (subject, recipient_email, message) => {
+  const response = await fetch("/mail", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ subject, recipient_email, message }),
+  });
 
-  // 서버와 비동기 통신 (폼데이터 전달 => 결과 받아서 처리)
-}); //클릭 이벤트 설정 end
+  if (!response.ok) {
+    throw new Error("요청에 실패했습니다.");
+  }
+
+  return response.json();
+};
+
+send.addEventListener("click", async () => {
+  try {
+    processing_tag.innerHTML =
+      '<img src="/static/images/progress.gif" style="width: 3%; margin-top: 10px;">';
+
+    const subject = document.querySelector("#subject").value;
+    const recipient_email = document.querySelector("#recipient_email").value;
+    const message = document.querySelector("#message").value;
+
+    await postMail(subject, recipient_email, message);
+  } catch (error) {
+    console.error("Error:", error);
+    alert("Error:" + error);
+  } finally {
+    processing_tag.innerHTML = "";
+  }
+});
