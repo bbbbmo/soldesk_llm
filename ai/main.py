@@ -3,6 +3,7 @@ from flask_cors import CORS
 from route import routes_bp
 
 app = Flask(__name__)  # __name__ == '__main__'
+
 CORS(app)
 
 app.register_blueprint(routes_bp)
