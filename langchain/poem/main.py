@@ -7,7 +7,11 @@ import streamlit as st
 
 load_dotenv()
 
-api_key = os.getenv("OPENAI_API_KEY")
+api_key = st.secrets.get("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY")
+
+if not api_key:
+    st.error("⚠️ OPENAI_API_KEY가 설정되지 않았습니다. Streamlit Cloud의 Secrets에 API 키를 추가해주세요.")
+    st.stop()
 
 st.title("AI 시인 :sunglasses:")
 
